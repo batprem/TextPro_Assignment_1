@@ -7,6 +7,10 @@ Dict_test = {
     "b":{ 1:5,
         4:5,
         10:11
+        },
+    "c":{ 7:10,
+        15:2,
+        13:14
         }
 }
 
@@ -20,7 +24,7 @@ for key,value in Dict_test.items(): # Getting keys and values in the first layer
             vector[key_in][key] = value_in #adding value
         else:
             vector[key_in] = {}
-            vector[key_in][key] = value_in
+            vector[key_in][key] = value_in #adding value
 ##    if 2 in value:
 ##        print(key, " : ", value[2])
 ##    else:
