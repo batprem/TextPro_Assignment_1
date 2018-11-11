@@ -2,7 +2,7 @@
 class Retrieve:
     # Create new Retrieve object storing index and termWeighting scheme
     def __init__(self,index, termWeighting): #Initial an object
-        self.index = index #
+        self.index = index #Save index
         self.termWeighting = termWeighting #Collect termWeighting
         self.vectormodel = self.Make_Vector_Model(index) #Model vector space for index
         if self.termWeighting == "tfidf": #in case of ifidf is selected
@@ -14,7 +14,7 @@ class Retrieve:
             for d,terms in index.items(): #Calculate for idf
                 df = len(terms) #All document containing term 'w'
                 idf[d] = self.Log(D/df) #obtaining idf(w)
-            for tf,terms in self.vectormodel.items(): #Calculate for tfidf
+            for tf,terms in self.vectormodel.items(): #Calculate for tfidf tf is a document, terms are words with frequency
                 tfidf[tf] = {} #initial tfidf vector
                 for word,TF in self.vectormodel[tf].items(): #Obtain term frequency of a vector  #TF in the number of times word occur in a Document.
                     tfidf[tf][word] = TF*idf[word] #Adding tfidf of each term in a document using tf(w,d)*idf(w)
@@ -57,12 +57,15 @@ class Retrieve:
             ###calculate tfidf of query##
             tfidf_query = {} #initial tfidf of query
             for tf,terms in query.items(): #Calculate for tfidf of query, tf is a word and terms are frequencies of the word
-                tfidf_query[tf] = {}
-                for word,TF in query.items(): #TF in the number of times word occur in query.
-                    if word in self.idf:
-                        tfidf_query[tf] = TF*self.idf[word] #save tfidf of word "tf"
+                
+                if tf in self.idf: #Check if word presents in idf
+
+                    tfidf_query[tf] = terms*self.idf[tf] #save tfidf of word "tf"
+                else:
+                    tfidf_query[tf] = 0
+            #\print(tfidf_query)
             #############################
-            size_q = sum([q**2 for q in list(tfidf_query.values())])**(0.5) #Getting the size of tfidf of query
+            size_q = sum(q**2 for q in tfidf_query.values())**(0.5) #Getting the size of tfidf of query
             for d,terms_tfidf in self.tfidf.items():
                 qd={} #initail qd
                 for k in tfidf_query: #k is a word in query
@@ -77,10 +80,7 @@ class Retrieve:
                 similarity[d] = size_qd/(size_q*size_d) #Calculate for similarity using similar equation
             sorted_similarity = sorted(similarity.keys(), key=lambda k: similarity[k], reverse=True) #Sorting values and get only first 10 values
             #print(sorted_similarity[0], " : ", similarity[1410])
-            return sorted_similarity[0:10] #return first 10 highest similarity
-                
-        #return list([1,2])
-        ###
+            return sorted_similarity[0:20] #return first 10 highest similarity
     def Make_Vector_Model(self, Document):
         vector = {} #return the vector values as a dictionary object 
         for key,value in Document.items(): # Getting keys and values in the first layer; key is term and value is dictionary inside
