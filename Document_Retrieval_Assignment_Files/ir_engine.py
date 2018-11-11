@@ -187,8 +187,8 @@ if __name__ == '__main__':
         #print(query)
         results = retrieve.forQuery(query)#Edit this command in the file
         allResults.store(qid, results)
-        if qid == 2:
-            break
+        #if qid == 2:
+        #    break
     t.stopPrint('retrieval')    
     allResults.output()
 
